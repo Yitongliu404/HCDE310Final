@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Fridgely{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+</head>
+<body>
+  <nav class="topnav">
+    <div class="nav-brand">
+      <span class="nav-logo">FC</span>
+      <span class="nav-title">Fridge<strong>Chef</strong></span>
+    </div>
+    <p class="nav-sub">Cook with what you already have.</p>
+  </nav>
+ 
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+ 
+  <footer>
+    <p>Recipe data from <a href="https://www.themealdb.com" target="_blank">TheMealDB</a> &nbsp;·&nbsp;
+    Nutrition from <a href="https://fdc.nal.usda.gov" target="_blank">USDA FoodData Central</a></p>
+  </footer>
+ 
+  {% block scripts %}{% endblock %}
+</body>
+</html>
