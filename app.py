@@ -74,3 +74,53 @@ def estimate_recipe_calories(ingredients: list[dict]) -> int:
     for ing in ingredients:
         total += fetch_calories(ing["name"])
     return round(total)
+
+def find_recipes(user_ingredients: list[str], sort_by: str = "best_match") -> list[dict]:
+    """
+    Search MealDB for each ingredient, deduplicate, enrich with details,
+    compute match scores, and return sorted recipe list.
+    """
+    user_set = {i.strip().lower() for i in user_ingredients if i.strip()}
+    meal_id_set: set[str] = set()
+    for ing in user_set:
+        stubs = search_by_ingredient(ing)
+        for stub in stubs[:15]:
+            meal_id_set.add(stub["idMeal"])
+    results = []
+    for meal_id in list(meal_id_set)[:30]:
+        detail = get_meal_detail(meal_id)
+        if not detail:
+            continue
+        ingredients = extract_ingredients(detail)
+        recipe_ing_names = {i["name"] for i in ingredients}
+        matched = recipe_ing_names & user_set
+        missing = recipe_ing_names - user_set
+        match_count = len(matched)
+        total_count = len(recipe_ing_names)
+        match_pct = round(match_count / total_count * 100) if total_count else 0
+        calories = estimate_recipe_calories(ingredients)
+        results.append({
+            "id": meal_id,
+            "title": detail.get("strMeal", ""),
+            "image": detail.get("strMealThumb", ""),
+            "category": detail.get("strCategory", ""),
+            "area": detail.get("strArea", ""),
+            "instructions": detail.get("strInstructions", ""),
+            "url": detail.get("strSource", "") or f"https://www.themealdb.com/meal/{meal_id}",
+            "youtube": detail.get("strYoutube", ""),
+            "ingredients": ingredients,
+            "matched": sorted(matched),
+            "missing": sorted(missing),
+            "match_count": match_count,
+            "total_count": total_count,
+            "match_pct": match_pct,
+            "calories": calories,
+        })
+    if sort_by == "calories":
+        results.sort(key=lambda r: r["calories"])
+    elif sort_by == "fewest_missing":
+        results.sort(key=lambda r: len(r["missing"]))
+    else:  # best_match
+        results.sort(key=lambda r: r["match_pct"], reverse=True)
+
+    return results
