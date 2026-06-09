@@ -14,6 +14,18 @@
   {% endif %}
 </div>
 
+{% if recipes %}
+<form method="POST" action="/results" id="resort-form">
+  <input type="hidden" name="ingredients" value="{{ user_ingredients | join(', ') }}"/>
+  <div class="sort-bar">
+    <span>Sort:</span>
+    {% for val, lbl in [('best_match','⭐ Best match'),('fewest_missing','🛒 Fewest missing'),('calories','🔥 Lowest cal')] %}
+    <button type="submit" name="sort_by" value="{{ val }}"
+      class="sort-btn {% if sort_by == val %}active{% endif %}">{{ lbl }}</button>
+    {% endfor %}
+  </div>
+</form>
+
 <div class="recipe-grid">
   {% for r in recipes %}
   <div class="recipe-card">
