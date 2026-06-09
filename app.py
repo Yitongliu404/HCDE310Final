@@ -36,3 +36,41 @@ def extract_ingredients(meal: dict) -> list[str]:
         if name:
             ingredients.append({"name": name.lower(), "measure": measure})
     return ingredients
+
+_calorie_cache: dict[str, float] = {}
+
+def fetch_calories(ingredient_name: str) -> float:
+    """Look up kcal/100g for an ingredient from USDA FoodData Central."""
+    if ingredient_name in _calorie_cache:
+        return _calorie_cache[ingredient_name]
+    try:
+        r = requests.get(
+            f"{USDA_BASE}/foods/search",
+            params={
+                "query": ingredient_name,
+                "pageSize": 1,
+                "api_key": USDA_API_KEY,
+            },
+            timeout=8,
+        )
+        data = r.json()
+        foods = data.get("foods", [])
+        if not foods:
+            return 0.0
+        nutrients = foods[0].get("foodNutrients", [])
+        for n in nutrients:
+            if "Energy" in n.get("nutrientName", ""):
+                val = n.get("value", 0) or 0
+                _calorie_cache[ingredient_name] = float(val)
+                return float(val)
+    except Exception:
+        pass
+    return 0.0
+
+
+def estimate_recipe_calories(ingredients: list[dict]) -> int:
+    """Rough calorie estimate summing USDA values (assuming ~100g each)."""
+    total = 0.0
+    for ing in ingredients:
+        total += fetch_calories(ing["name"])
+    return round(total)
