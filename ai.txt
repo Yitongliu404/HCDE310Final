@@ -1,0 +1,27 @@
+1. General idea and how to develop
+2. How to search and add YouTube link in the Webpage
+3. What this error means “127.0.0.1 - - [09/Jun/2026 09:51:16] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2026 09:51:16] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jun/2026 09:51:17] "GET /static/style.css HTTP/1.1" 200 -
+[2026-06-09 09:52:47,911] ERROR in app: Exception on /results [POST]
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/selinaliu/HCDE310Final/app.py", line 138, in results
+    recipes = find_recipes(user_ingredients, sort_by)
+  File "/Users/selinaliu/HCDE310Final/app.py", line 93, in find_recipes
+    ingredients = extract_ingredients(detail)
+  File "/Users/selinaliu/HCDE310Final/app.py", line 34, in extract_ingredients
+    name = meal.get(f"strIngredient{i}", "").strip()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+127.0.0.1 - - [09/Jun/2026 09:52:47] "POST /results HTTP/1.1" 500 -”
+4. How to make animation for the final page
+5. Why currently run pretty slow? and how to revise
