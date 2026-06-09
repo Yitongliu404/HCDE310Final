@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ meal.strMeal }} - Fridgely{% endblock %}
+
+{% block content %}
+<div class="detail-wrap">
+  <a href="javascript:history.back()" class="back-link">← Back to results</a>
+
+  <div class="detail-hero">
+    <div class="detail-img-wrap">
+      <img src="{{ meal.strMealThumb }}" alt="{{ meal.strMeal }}" class="detail-img"/>
+      <span class="cal-pill">🔥 ~{{ calories }} kcal</span>
+    </div>
+
+    <div class="detail-info">
+      <div class="detail-tags">
+        <span class="dtag cat">{{ meal.strCategory }}</span>
+        <span class="dtag area">{{ meal.strArea }}</span>
+      </div>
+      <h1 class="detail-title">{{ meal.strMeal }}</h1>
+
+      {% set have_count = matched | length %}
+      {% set total = ingredients | length %}
+      {% set pct = ((have_count / total * 100) | round | int) if total else 0 %}
+
+      <div class="score-box">
+        <p><strong>{{ have_count }}</strong> of <strong>{{ total }}</strong> ingredients you already have ({{ pct }}% match)</p>
+        {% if matched %}
+        <p class="score-have">✅ Have: {{ matched | join(', ') }}</p>
+        {% endif %}
+        {% if missing %}
+        <p class="score-need">🛒 Need: {{ missing | join(', ') }}</p>
+        {% endif %}
+      </div>
+
+      {% if meal.strYoutube %}
+      <div class="detail-links">
+        <a href="{{ meal.strYoutube }}" target="_blank" class="dlink secondary">▶ Watch on YouTube</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <section style="margin-bottom:2rem">
+    <h2 class="section-title">Ingredients</h2>
+    <ul class="ing-list">
+      {% for ing in ingredients %}
+      <li class="ing-item {% if ing.name in matched %}have{% else %}need{% endif %}">
+        <span class="ing-dot"></span>
+        <span class="ing-name">{{ ing.name | title }}</span>
+        <span class="ing-measure">{{ ing.measure }}</span>
+        <span class="ing-tag">{% if ing.name in matched %}✓ have{% else %}🛒 need{% endif %}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section>
+    <h2 class="section-title">Instructions</h2>
+    <div class="steps">
+      {#
+        Split by line breaks first; if a line is still very long (>300 chars),
+        further split by ". " so each sentence becomes its own step.
+      #}
+      {% set raw_steps = meal.strInstructions.split('\r\n') if '\r\n' in meal.strInstructions else meal.strInstructions.split('\n') %}
+      {% set n = namespace(value=0) %}
+      {% for raw in raw_steps %}
+        {% set s = raw.strip() %}
+        {% if s %}
+          {% if s | length > 300 %}
+            {% for sentence in s.split('. ') %}
+              {% set sent = sentence.strip().rstrip('.') %}
+              {% if sent | length > 10 %}
+                {% set n.value = n.value + 1 %}
+                <div class="step" >
+                  <div class="step-num">{{ n.value }}</div>
+                  <p>{{ sent }}.</p>
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            {% set n.value = n.value + 1 %}
+            <div class="step" >
+              <div class="step-num">{{ n.value }}</div>
+              <p>{{ s }}</p>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+{% endblock %}
