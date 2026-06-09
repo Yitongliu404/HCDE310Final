@@ -67,7 +67,6 @@ def fetch_calories(ingredient_name: str) -> float:
         pass
     return 0.0
 
-
 def estimate_recipe_calories(ingredients: list[dict]) -> int:
     """Rough calorie estimate summing USDA values (assuming ~100g each)."""
     total = 0.0
@@ -129,7 +128,6 @@ def find_recipes(user_ingredients: list[str], sort_by: str = "best_match") -> li
 def index():
     return render_template("index.html")
 
-
 @app.route("/results", methods=["POST"])
 def results():
     raw = request.form.get("ingredients", "")
@@ -169,7 +167,6 @@ def recipe_detail(meal_id):
         calories=calories,
         user_ingredients_raw=user_ingredients_raw,
     )
-
 
 if __name__ == "__main__":
     app.run(debug=True)
