@@ -124,3 +124,52 @@ def find_recipes(user_ingredients: list[str], sort_by: str = "best_match") -> li
         results.sort(key=lambda r: r["match_pct"], reverse=True)
 
     return results
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/results", methods=["POST"])
+def results():
+    raw = request.form.get("ingredients", "")
+    sort_by = request.form.get("sort_by", "best_match")
+    user_ingredients = [i.strip() for i in raw.split(",") if i.strip()]
+    if not user_ingredients:
+        return render_template("index.html", error="Please enter at least one ingredient.")
+    recipes = find_recipes(user_ingredients, sort_by)
+    return render_template(
+        "results.html",
+        recipes=recipes,
+        user_ingredients=user_ingredients,
+        sort_by=sort_by,
+    )
+
+@app.route("/recipe/<meal_id>")
+def recipe_detail(meal_id):
+    user_ingredients_raw = request.args.get("ingredients", "")
+    user_ingredients = [i.strip().lower() for i in user_ingredients_raw.split(",") if i.strip()]
+    user_set = set(user_ingredients)
+
+    detail = get_meal_detail(meal_id)
+    if not detail:
+        return render_template("index.html", error="Recipe not found.")
+
+    ingredients = extract_ingredients(detail)
+    matched = {i["name"] for i in ingredients if i["name"] in user_set}
+    missing = {i["name"] for i in ingredients if i["name"] not in user_set}
+    calories = estimate_recipe_calories(ingredients)
+
+    return render_template(
+        "recipe.html",
+        meal=detail,
+        ingredients=ingredients,
+        matched=matched,
+        missing=missing,
+        calories=calories,
+        user_ingredients_raw=user_ingredients_raw,
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
