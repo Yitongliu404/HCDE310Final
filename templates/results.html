@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Results - Fridgely{% endblock %}
+
+{% block content %}
+<div class="results-header">
+  <a href="/" class="back-link">← Back</a>
+  <h2>Recipes for <span>{{ user_ingredients | join(', ') }}</span></h2>
+  {% if recipes %}
+  <p>Found {{ recipes | length }} recipe(s) · sorted by
+    {{ {'best_match':'best match','fewest_missing':'fewest missing','calories':'lowest calories'}[sort_by] }}
+  </p>
+  {% else %}
+  <p>No recipes found — try different ingredients.</p>
+  {% endif %}
+</div>
+
+<div class="recipe-grid">
+  {% for r in recipes %}
+  <div class="recipe-card">
+    <a href="/recipe/{{ r.id }}?ingredients={{ user_ingredients | join(',') | urlencode }}">
+      <div class="card-img-wrap">
+        <img src="{{ r.image }}/preview" alt="{{ r.title }}" class="card-img" loading="lazy"/>
+        <span class="card-badge">{{ r.area }}</span>
+        <span class="match-pill">{{ r.match_pct }}% match</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">{{ r.title }}</p>
+        <p class="card-category">{{ r.category }}</p>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="stat-val">{{ r.match_count }}/{{ r.total_count }}</span>
+            <span class="stat-lbl">have</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val">{{ r.missing | length }}</span>
+            <span class="stat-lbl">need</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val">~{{ r.calories }}</span>
+            <span class="stat-lbl">kcal</span>
+          </div>
+        </div>
+        {% if r.matched %}
+        <div class="chips">
+          {% for ing in r.matched[:4] %}<span class="chip have">{{ ing }}</span>{% endfor %}
+          {% if r.matched | length > 4 %}<span class="chip more">+{{ r.matched|length - 4 }}</span>{% endif %}
+        </div>
+        {% endif %}
+        {% if r.missing %}
+        <div class="chips">
+          {% for ing in r.missing[:3] %}<span class="chip need">{{ ing }}</span>{% endfor %}
+          {% if r.missing | length > 3 %}<span class="chip more">+{{ r.missing|length - 3 }} more</span>{% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+<div class="empty-state">
+  <div style="font-size:3.5rem">🫙</div>
+  <p>The fridge is bare! Try ingredients like <em>chicken</em>, <em>rice</em>, or <em>tomato</em>.</p>
+  <a href="/" class="find-btn" style="display:inline-flex;max-width:200px;text-decoration:none">Search again</a>
+</div>
+{% endif %}
+
+{% endblock %}
