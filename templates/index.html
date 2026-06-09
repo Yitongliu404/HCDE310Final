@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+ 
+<div class="hero-card">
+  <div class="mascot-row">
+    <div class="fridge-mascot">
+      <svg viewBox="0 0 120 180" width="110" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="8" width="100" height="164" rx="16" fill="#e8f5e9" stroke="#2d6a4f" stroke-width="2.5"/>
+        <rect x="14" y="12" width="92" height="58" rx="12" fill="#c8e6c9" stroke="#2d6a4f" stroke-width="1.5"/>
+        <rect x="14" y="74" width="92" height="94" rx="10" fill="#a5d6a7" stroke="#2d6a4f" stroke-width="1.5"/>
+        <line x1="10" y1="72" x2="110" y2="72" stroke="#2d6a4f" stroke-width="2.5"/>
+        <rect x="84" y="28" width="12" height="20" rx="6" fill="white" stroke="#2d6a4f" stroke-width="1.5"/>
+        <rect x="84" y="92" width="12" height="36" rx="6" fill="white" stroke="#2d6a4f" stroke-width="1.5"/>
+        <circle class="fridge-eye" cx="46" cy="36" r="6" fill="#2d6a4f"/>
+        <circle class="fridge-eye" cx="74" cy="36" r="6" fill="#2d6a4f"/>
+        <ellipse cx="36" cy="46" rx="8" ry="5" fill="#f48fb1" opacity="0.45"/>
+        <ellipse cx="84" cy="46" rx="8" ry="5" fill="#f48fb1" opacity="0.45"/>
+        <path d="M50 54 Q60 64 70 54" stroke="#2d6a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <circle cx="40" cy="118" r="10" fill="#ff8f00" opacity="0.8"/>
+        <rect x="57" y="108" width="16" height="20" rx="3" fill="#43a047" opacity="0.8"/>
+        <ellipse cx="90" cy="118" rx="11" ry="8" fill="#e53935" opacity="0.75"/>
+      </svg>
+    </div>
+ 
+    <div class="intro-bubble">
+        <p>🤔 Not sure what to eat today?</p>
+        <p>Got some ingredients left in your fridge but don't know what to make with them?</p>
+        <p>No worries! 🎉 Just enter the ingredients you have on hand, and I'll help you find a recipe!</p>
+    </div>
+ 
+    <div class="chef-mascot">
+      <svg viewBox="0 0 100 130" width="90" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="38" rx="28" ry="8" fill="#2d6a4f"/>
+        <rect x="24" y="16" width="52" height="26" rx="10" fill="white" stroke="#2d6a4f" stroke-width="1.5"/>
+        <ellipse cx="50" cy="16" rx="18" ry="10" fill="white" stroke="#2d6a4f" stroke-width="1.5"/>
+        <circle cx="50" cy="62" r="24" fill="#ffcc80" stroke="#2d6a4f" stroke-width="1.5"/>
+        <circle cx="42" cy="58" r="4" fill="#2d6a4f"/>
+        <circle cx="58" cy="58" r="4" fill="#2d6a4f"/>
+        <ellipse cx="38" cy="68" rx="6" ry="4" fill="#f48fb1" opacity="0.45"/>
+        <ellipse cx="62" cy="68" rx="6" ry="4" fill="#f48fb1" opacity="0.45"/>
+        <path d="M42 72 Q50 80 58 72" stroke="#2d6a4f" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <rect x="30" y="84" width="40" height="30" rx="10" fill="white" stroke="#2d6a4f" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+ 
+  {% if error %}
+  <p class="form-error">⚠️ {{ error }}</p>
+  {% endif %}
+ 
+  <form action="/results" method="POST" id="search-form">
+    <div class="form-section">
+      <label for="ingredients"><strong>Available ingredients</strong></label>
+      <textarea name="ingredients" id="ingredients" rows="3"
+        placeholder="chicken, rice, egg, tomato…" required></textarea>
+    </div>
+ 
+    <div class="form-section">
+      <label for="sort_by"><strong>Sort by</strong></label>
+      <select name="sort_by" id="sort_by">
+        <option value="best_match">Best match</option>
+        <option value="fewest_missing">Fewest missing ingredients</option>
+        <option value="calories">Lowest calories</option>
+      </select>
+    </div>
+ 
+    <button type="submit" class="find-btn" id="find-btn">
+      Find recipes &nbsp;🍳
+    </button>
+  </form>
+</div>
+
+
+<div id="loading-overlay" style="display:none;">
+  <div class="loading-box">
+    <div class="loading-chef">👨‍🍳</div>
+    <p id="loading-msg">Searching recipes…</p>
+    <div class="loading-bar"><div class="loading-fill" id="loading-fill"></div></div>
+  </div>
+</div>
+ 
+{% endblock %}
+ 
+{% block scripts %}
+<script>
+const messages = [
+  "Searching recipes…",
+  "Matching your ingredients…",
+  "Estimating calories…",
+  "Almost ready! 🍽️"
+];
+let pct = 0, msgIdx = 0;
+ 
+document.getElementById('search-form').addEventListener('submit', function() {
+  document.getElementById('loading-overlay').style.display = 'flex';
+  const fill = document.getElementById('loading-fill');
+  const msg  = document.getElementById('loading-msg');
+  setInterval(() => {
+    pct = Math.min(pct + Math.random() * 15, 92);
+    fill.style.width = pct + '%';
+    if (pct > 25 && msgIdx === 0) { msgIdx = 1; msg.textContent = messages[1]; }
+    if (pct > 55 && msgIdx === 1) { msgIdx = 2; msg.textContent = messages[2]; }
+    if (pct > 78 && msgIdx === 2) { msgIdx = 3; msg.textContent = messages[3]; }
+  }, 350);
+});
+</script>
+{% endblock %}
