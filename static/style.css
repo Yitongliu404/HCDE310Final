@@ -17,3 +17,73 @@
   --radius-sm:   10px;
   --shadow:      0 4px 24px rgba(27,67,50,.10);
 }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+.intro-bubble {
+  flex: 1;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: .85rem 1rem;
+  font-size: .88rem; line-height: 1.7;
+  color: var(--text-mid);
+  position: relative;
+}
+.intro-bubble::before {
+  content: '';
+  position: absolute; left: -8px; top: 24px;
+  border: 8px solid transparent;
+  border-right-color: var(--border);
+}
+.intro-bubble::after {
+  content: '';
+  position: absolute; left: -6px; top: 25px;
+  border: 7px solid transparent;
+  border-right-color: var(--white);
+}
+.intro-bubble p { margin-bottom: .25rem; }
+.intro-bubble p:last-child { margin-bottom: 0; }
+
+.find-btn {
+  width: 100%; padding: .95rem;
+  background: var(--green);
+  color: white; border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800; font-size: 1.05rem;
+  cursor: pointer; letter-spacing: .02em;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 4px 14px rgba(45,106,79,.35);
+  position: relative; overflow: hidden;
+}
+.find-btn:hover  { background: var(--green-dark); transform: translateY(-2px); box-shadow: 0 7px 20px rgba(45,106,79,.4); }
+.find-btn:active { transform: translateY(0); }
+
+.results-header {
+  max-width: 860px; margin: 0 auto 1.2rem;
+  padding: 0 .5rem;
+}
+ 
+.back-link {
+  display: inline-block; margin-bottom: .8rem;
+  font-size: .83rem; font-weight: 600;
+  color: var(--green); text-decoration: none;
+  transition: letter-spacing .15s;
+}
+.back-link:hover { letter-spacing: .03em; }
+ 
+.results-header h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.6rem; font-weight: 900;
+  color: var(--green-dark); margin-bottom: .3rem;
+}
+.results-header h2 span { color: var(--green); }
+.results-header p { font-size: .85rem; color: var(--text-light); }
