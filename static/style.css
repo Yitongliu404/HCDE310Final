@@ -103,22 +103,41 @@ main { flex: 1; padding: 1.5rem 1rem 3rem; }
   padding: .85rem 1rem;
   font-size: .88rem; line-height: 1.7;
   color: var(--text-mid);
-  position: relative;
+  position: center;
 }
-.intro-bubble::before {
-  content: '';
-  position: absolute; left: -8px; top: 24px;
-  border: 8px solid transparent;
-  border-right-color: var(--border);
-}
-.intro-bubble::after {
-  content: '';
-  position: absolute; left: -6px; top: 25px;
-  border: 7px solid transparent;
-  border-right-color: var(--white);
-}
-.intro-bubble p { margin-bottom: .25rem; }
+.intro-bubble p { margin-bottom: .3rem; }
 .intro-bubble p:last-child { margin-bottom: 0; }
+
+.chef-wrap {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+}
+.chef-speech {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: .45rem .75rem;
+  font-size: .78rem; font-weight: 600;
+  color: var(--green-dark);
+  text-align: center; line-height: 1.5;
+  position: relative;
+  white-space: nowrap;
+}
+.chef-speech::after {
+  content: '';
+  position: absolute; bottom: -8px; left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: var(--border);
+}
+.chef-speech::before {
+  content: '';
+  position: absolute; bottom: -6px; left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: var(--white);
+  z-index: 1;
+}
 
 .hero-card form { padding: 1.4rem 1.5rem 1.5rem; }
 
