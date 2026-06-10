@@ -2,7 +2,7 @@ import requests
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
-USDA_API_KEY = "BvFgr3AWAcsz4I85OTGucCzX9rVTaPcPAuP1s6S3"
+USDA_API_KEY = "USDA_API_KEY_HERE"
 MEALDB_BASE = "https://www.themealdb.com/api/json/v1/1"
 USDA_BASE = "https://api.nal.usda.gov/fdc/v1"
 
