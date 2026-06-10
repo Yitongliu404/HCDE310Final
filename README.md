@@ -13,11 +13,11 @@ Multiple sorting options: Best Match, Fewest Missing Ingredients, Lowest Calorie
 Detailed recipe pages with: Ingredients, Cooking instructions, Recipe images, YouTube tutorials (when available)
 Responsive UI with animated loading screens and interactive recipe cards
 
-APIs:
-1. TheMealDB
+APIs:  
+- TheMealDB
 Recipe database used for: Recipe search, Ingredients, Images, Instructions, Video links
 https://www.themealdb.com
-2. USDA FoodData Central
+- USDA FoodData Central
 Nutrition database used for: Ingredient calorie lookup, Recipe calorie estimation
 https://fdc.nal.usda.gov
 
