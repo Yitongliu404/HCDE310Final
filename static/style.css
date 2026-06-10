@@ -95,15 +95,6 @@ main { flex: 1; padding: 1.5rem 1rem 3rem; }
   50%      { transform: translateY(-6px); }
 }
 
-.fridge-eye {
-  animation: blink 4.5s ease-in-out infinite;
-  transform-origin: center;
-}
-@keyframes blink {
-  0%,88%,100% { transform: scaleY(1); }
-  94%          { transform: scaleY(.08); }
-}
-
 .intro-bubble {
   flex: 1;
   background: var(--white);
