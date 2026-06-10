@@ -6,6 +6,50 @@ USDA_API_KEY = "BvFgr3AWAcsz4I85OTGucCzX9rVTaPcPAuP1s6S3"
 MEALDB_BASE = "https://www.themealdb.com/api/json/v1/1"
 USDA_BASE = "https://api.nal.usda.gov/fdc/v1"
 
+INGREDIENT_ALIASES = {
+    'ground beef':'beef mince',
+    'minced beef':'beef mince',
+    'green onion':'spring onions',
+    'scallion':'spring onions',
+    'bell pepper':'red pepper',
+    'heavy cream':'double cream',
+    'cilantro':'coriander',
+    'eggplant':'aubergine',
+    'zucchini':'courgette',
+    'shrimp':'prawns',
+    'ground pork':'pork mince',
+    'corn starch':'cornflour',
+    'starch':'cornflour',
+    'scallions':'spring onions',
+    'chili':'red chilli',
+    'chilli':'red chilli',
+    'hot pepper':'red chilli',
+}
+STRIP_PREFIXES = ['chopped ', 'minced ', 'sliced ', 'diced ', 'crushed ', 'fresh ', 'dried ', 'cooked ', 'frozen ', 'ground ']
+
+def singularize(word):
+    if word.endswith('ves'):
+        return word[:-3] + 'f'
+    if word.endswith('ies'):
+        return word[:-3] + 'y'
+    if word.endswith('s') and not word.endswith('ss') and len(word) > 3:
+        return word[:-1]
+    return word
+
+def normalize_ingredient(name):
+    key = name.strip().lower()
+    if key in INGREDIENT_ALIASES:
+        return INGREDIENT_ALIASES[key]
+    for prefix in STRIP_PREFIXES:
+        if key.startswith(prefix):
+            stripped = key[len(prefix):]
+            if stripped in INGREDIENT_ALIASES:
+                return INGREDIENT_ALIASES[stripped]
+            return stripped
+    if key.endswith('s') and len(key) > 3:
+        return key
+    return key
+
 def search_by_ingredient(ingredient) :
     url = f"{MEALDB_BASE}/filter.php"
     try:
@@ -106,7 +150,7 @@ def find_recipes(user_ingredients, sort_by="best_match"):
         results.sort(key=lambda r: r["calories"])
     elif sort_by == "fewest_missing":
         results.sort(key=lambda r: len(r["missing"]))
-    else:  # best_match
+    else:
         results.sort(key=lambda r: r["match_pct"], reverse=True)
 
     return results
