@@ -16,9 +16,6 @@
         <ellipse cx="36" cy="46" rx="8" ry="5" fill="#f48fb1" opacity="0.45"/>
         <ellipse cx="84" cy="46" rx="8" ry="5" fill="#f48fb1" opacity="0.45"/>
         <path d="M50 54 Q60 64 70 54" stroke="#2d6a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <circle cx="40" cy="118" r="10" fill="#ff8f00" opacity="0.8"/>
-        <rect x="57" y="108" width="16" height="20" rx="3" fill="#43a047" opacity="0.8"/>
-        <ellipse cx="90" cy="118" rx="11" ry="8" fill="#e53935" opacity="0.75"/>
       </svg>
     </div>
  
@@ -27,9 +24,11 @@
         <p>Got some ingredients left in your fridge but don't know what to make with them?</p>
         <p>No worries!!! Just enter the ingredients you have on hand, and I'll help you find a recipe! 🍽️</p>
     </div>
- 
-    <div class="chef-mascot">
-      <img src="{{ url_for('static', filename='chef.png') }}" alt="chef" width="100"/>
+    <div class="chef-wrap">
+      <div class="chef-speech">Welcome to Fridgely!<br>I'm your fridge chef ✨</div>
+      <div class="chef-mascot">
+        <img src="{{ url_for('static', filename='chef.png') }}" alt="chef" width="100"/>
+      </div>
     </div>
   </div>
  
@@ -41,7 +40,7 @@
     <div class="form-section">
       <label for="ingredients"><strong>Available ingredients</strong></label>
       <textarea name="ingredients" id="ingredients" rows="3"
-        placeholder="chicken, rice, egg, tomato…" required></textarea>
+        placeholder="chicken, rice, egg, tomato… anything you have!" required></textarea>
     </div>
  
     <div class="form-section">
