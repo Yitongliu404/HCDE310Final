@@ -33,7 +33,7 @@ After receiving this explanation, I modified the ingredient extraction logic to 
 
 4. Creating a loading animation
 After implementing the core functionality, I noticed that users sometimes had to wait several seconds before recipe results appeared.
-I wanted to make the waiting experience feel more interactive, so I asked ChatGPT:
+I wanted to make the waiting experience feel more interactive, so I asked Claude:
 "How can I create a small loading animation or progress indicator while the recipes are being searched?"
 Claude suggested several ideas, including:
 Animated chef icons
