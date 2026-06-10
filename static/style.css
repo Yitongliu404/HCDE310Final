@@ -103,7 +103,20 @@ main { flex: 1; padding: 1.5rem 1rem 3rem; }
   padding: .85rem 1rem;
   font-size: .88rem; line-height: 1.7;
   color: var(--text-mid);
-  position: center;
+  position: relative;
+  text-align: center;
+}
+.intro-bubble::before {
+  content: '';
+  position: absolute; left: -8px; top: 24px;
+  border: 8px solid transparent;
+  border-right-color: var(--border);
+}
+.intro-bubble::after {
+  content: '';
+  position: absolute; left: -6px; top: 25px;
+  border: 7px solid transparent;
+  border-right-color: var(--white);
 }
 .intro-bubble p { margin-bottom: .3rem; }
 .intro-bubble p:last-child { margin-bottom: 0; }
