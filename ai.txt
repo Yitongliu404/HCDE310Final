@@ -1,27 +1,59 @@
-1. General idea and how to develop
-2. How to search and add YouTube link in the Webpage
-3. What this error means “127.0.0.1 - - [09/Jun/2026 09:51:16] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [09/Jun/2026 09:51:16] "GET / HTTP/1.1" 200 -
-127.0.0.1 - - [09/Jun/2026 09:51:17] "GET /static/style.css HTTP/1.1" 200 -
-[2026-06-09 09:52:47,911] ERROR in app: Exception on /results [POST]
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 1511, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 919, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 917, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages/flask/app.py", line 902, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
-  File "/Users/selinaliu/HCDE310Final/app.py", line 138, in results
-    recipes = find_recipes(user_ingredients, sort_by)
-  File "/Users/selinaliu/HCDE310Final/app.py", line 93, in find_recipes
-    ingredients = extract_ingredients(detail)
-  File "/Users/selinaliu/HCDE310Final/app.py", line 34, in extract_ingredients
-    name = meal.get(f"strIngredient{i}", "").strip()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'strip'
-127.0.0.1 - - [09/Jun/2026 09:52:47] "POST /results HTTP/1.1" 500 -”
-4. How to make animation for the final page
-5. Why currently run pretty slow? and how to revise
+1. Development Suggestion
+Since this was my first time independently building a complete API-based web application without detailed instructions, 
+I was initially unsure how to organize the project structure and development process.
+I give my porposal idea to Claude and asked:
+"How should I break this project into smaller steps and organize the development process?"
+I got the suggestions that "that before writing code, you should sketch the overall workflow of the project, including:
+What happens on each webpage
+How data flows between pages
+Which API requests are needed
+What functions are responsible for each task
+How the routes, methods, and templates connect together
+While you writing it adding comments while implementing each method so that the purpose of every function remained clear and easy to dubug.
+Based on this advice, I first mapped out the user flow from ingredient input → recipe search → recipe details before beginning implementation.
+
+2. Adding YouTube links to recipe pages
+While exploring the response data returned by TheMealDB API, I noticed that each recipe contained a YouTube tutorial link, which I wanted to add it into my page as well,
+So I asked Claude "How can I add the YouTube link returned by the API to my recipe page?"
+After also copy paste an TheMealDB result JSON page, Claude explained that the API response already contained a strYoutube field and suggested passing this value from Flask into the recipe template and conditionally rendering a button or hyperlink.
+Based on this explanation, I added the following functionality:
+Retrieved strYoutube from the recipe data
+Passed the value to recipe.html
+Added a "Watch on YouTube" button that appears only when a video link is available
+
+3. Debugging a Flask runtime error
+While testing the application, I received the following error:
+AttributeError: 'NoneType' object has no attribute 'strip', which I don't understand what it means after checking my code line by line,
+So I copied the entire terminal error message into Claude and asked: "What does this error mean?"
+Claude explained that .strip() can only be called on strings, and that one or more ingredient fields returned by the API were likely None rather than text.
+It explained that the code was effectively trying to execute:
+None.strip()
+which caused the application to crash.
+After receiving this explanation, I modified the ingredient extraction logic to safely handle missing values before calling .strip().
+
+4. Creating a loading animation
+After implementing the core functionality, I noticed that users sometimes had to wait several seconds before recipe results appeared.
+I wanted to make the waiting experience feel more interactive, so I asked ChatGPT:
+"How can I create a small loading animation or progress indicator while the recipes are being searched?"
+Claude suggested several ideas, including:
+Animated chef icons
+Progress bars
+Rotating loading messages
+CSS hover and transition effects
+And I asked for an example implementations using JavaScript and CSS to show me effect
+And I implemented A loading overlay An animated progress bar.
+And I search for tutorials on how to achieve the animations I want.
+
+5. Finding the reason for slow performance
+Even after the website was functioning correctly, I noticed that recipe searches were still relatively slow.
+I asked Claude:"Why does the recipe search take so long after users enter ingredients?"
+Claude explained that the application was performing many API requests sequentially:
+Search recipes from TheMealDB
+Request details for each recipe
+Request calorie information from USDA for multiple ingredients
+Because each request waits for the previous request to finish, the total response time becomes noticeable.
+I then asked:
+"How can I make it faster?"
+It give me specific instructions on reducing duplicate API requests, limiting the number of recipes processed, and making requests concurrently
+Although I understood the general explanation, I did not fully understand how to implement some of the more advanced optimization techniques.
+And the waiting time is not that unacceptable long, therefore, I decided not to make further modifications in this area and kept the existing implementation.
